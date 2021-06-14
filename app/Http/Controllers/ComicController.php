@@ -50,7 +50,17 @@ class ComicController extends Controller
      */
     public function show($id)
     {
-        //
+        // GET SINGLE COMIC BY ID
+       $comic = Comic::find($id);
+
+       // RETURN VIEW + CONTROL ERROR 404
+       if($comic){
+           return view('comics.show', compact('comic'));
+       }
+
+       // 404
+       abort(404);
+      
     }
 
     /**
