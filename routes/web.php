@@ -12,5 +12,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// HOMEPAGE      //name    //name controller
+// home page
+// Route::get('/', 'Homepagecontroller@index' );
+
+//Resource: unico punto per tutte le url (php artisan route:list) 
+
+                //name    //name controller
 Route::resource('comics', 'ComicController');
+
+

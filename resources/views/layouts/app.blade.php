@@ -11,7 +11,7 @@
 <body>
     @include('partials.Header')
 
-    <main>
+    <main >
         @yield('content')
     </main>
      

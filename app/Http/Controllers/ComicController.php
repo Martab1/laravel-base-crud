@@ -16,6 +16,8 @@ class ComicController extends Controller
     {
        // get comics from db
        $comics = Comic::all();
+       // $comics = Comic::OrderBy('id' ,'asc');
+
        // view
        return view('comics.index', compact('comics'));
 
@@ -28,7 +30,7 @@ class ComicController extends Controller
      */
     public function create()
     {
-        //
+        return view('comics.create');
     }
 
     /**
@@ -39,8 +41,31 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // PRENDO DATI CREATI 
+        $data = $request->all();
+
+        // INSERT DB
+        $new_comic = new Comic();
+
+        // popolo con i dati del create
+        // ***** A 
+        // $new_comic->title = $data['title'];
+        // $new_comic->description = $data['description'];
+        // $new_comic->price = $data['price'];
+        // $new_comic->type = $data['type'];
+        // $new_comic->series = $data['series'];
+        // $new_comic->sale_date = $data['sale_date'];
+        // $new_comic->thumb = $data['thumb'];
+
+        //****  B asseganzione di massa 
+        $new_comic->fill($data);   // !!!!!!! NEL MODEL COMIC DICHIARARE I FILLABLE!!!!!!
+        //save 
+        $new_comic->save();
+
+        //REDIRECT to pasta detail (show)
+        return redirect()->route('comics.show', $new_comic->id);
+
+    } 
 
     /**
      * Display the specified resource.
@@ -48,12 +73,17 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Comic $comic)
     {
-        // GET SINGLE COMIC BY ID
-       $comic = Comic::find($id);
+        /**
+         * GET SINGLE COMIC BY ID
+         **/ 
 
-       // RETURN VIEW + CONTROL ERROR 404
+        // $comic = Comic::find($id);  = public function show(Comic $comic)    (short create instance)
+
+       /**
+        * RETURN VIEW + CONTROL ERROR 404
+        **/ 
        if($comic){
            return view('comics.show', compact('comic'));
        }
@@ -69,9 +99,19 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Comic $comic)
     {
-        //
+        // GET COMIC BY id
+        // $comic = Comic::find($id);
+
+        if($comic){
+            return view('comics.edit', compact('comic'));
+        }
+ 
+        // 404
+        abort(404);
+
+        
     }
 
     /**
@@ -81,9 +121,16 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, Comic $comic)
+    {   
+        //salvo dati dell'edit
+        $data = $request->all();
+        // get comic by id
+        // $comic = Comic::find($id);
+        //modifica e salva quello specifico corrispondente 
+        $comic->update($data);    // !!!!! FILLABLE IN MODEL !!!!!
+        // redirect
+        return redirect()->route('comics.show', $comic->id);
     }
 
     /**
@@ -94,6 +141,10 @@ class ComicController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comic = comic::find($id);
+        $comic->delete();
+
+        return redirect()->route('comics.index')->with('deleted', $comic->title);
+
     }
 }

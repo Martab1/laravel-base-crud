@@ -3,6 +3,14 @@
 
 @section('content')
     <section class="container mt-5">
+        <h1>ALL COMICS</h1>
+
+        @if(session('deleted'))
+           <div class="alert alert-success">
+               <strong>{{ session('deleted') }}</strong>
+               successfully deldeted.
+           </div>
+        @endif   
         <div>
             @foreach ($comics as $comic)
             <div class="card mb-3 " >
@@ -19,10 +27,15 @@
                     </div>
                   </div>
 
-                  <div class="col-md-3 my-3 p-3 ">
+                  <div class="col-md-3 my-5 p-3 ">
                     <a href="{{ route('comics.show', $comic->id)}}" class="btn btn-dark">SHOW</a>
-                    <a href="#" class="btn btn-dark">EDIT</a>
-                    <a href="#" class="btn btn-dark">DELETE</a>
+                    <a href="{{ route('comics.edit', $comic->id)}}" class="btn btn-dark">EDIT</a>
+                    
+                    <form action="{{ route('comics.destroy', $comic->id) }}" method="POST" class="form-check-inline">
+                        @csrf
+                        @method('DELETE')
+                        <input type="submit" class="btn btn-danger" value="DELETE">
+                    </form>
                   </div>
                 </div>
               </div>
